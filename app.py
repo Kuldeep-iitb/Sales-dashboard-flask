@@ -76,8 +76,11 @@ def dashboard():
     months = [datetime.today().replace(day=1) - timedelta(days=31*i) for i in range(12)]
     deals_month = Counter({m.strftime('%m'): 0 for m in months})
     deal_value = 0
+    deals_year = 0
+    
     # deals_month = []
     for deal in response_deals:
+        deals_year += 1
         deal_value += deal.get("value")
         month = deal.get("closeddate").split("-")[1]
         if month in deals_month:
@@ -86,16 +89,14 @@ def dashboard():
 
     #convert to json
     deals_month = json.dumps(deals_month)
+    deal_value = int(deal_value / len(response_deals))
     
     print(deals_month)
 
 
-    if len(response_deals) > 0:
-        deal_value = int(deal_value / len(response_deals))
-        return render_template('dashboard.html', deal_value=deal_value, deals_month=deals_month)
-    else:
-        deal_value = 0
-        return render_template('dashboard.html', deal_value=deal_value, deals_month=deals_month)
+
+    return render_template('dashboard.html', deal_value=deal_value, deals_month=deals_month, deals_year=deals_year)
+    
 
 # Example page
 @app.route('/example')
@@ -147,7 +148,7 @@ def customers():
         companies.append({"name": name, "buyingstatus": buyingstatus, "country": country, "city": city, "phone": phone})
     print(companies)
 
-    return render_template('mytemplate.html', companies=companies)
+    return render_template('customers.html', companies=companies)
 
 
 # DEBUGGING

@@ -1,20 +1,93 @@
-{% extends 'layout.html' %}
+{% extends 'layout.html' %} {% block body %}
 
-{% block body %}
-	<h1>My example data</h1>
-	<br>
+<div id="wrapper">
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+      <div class="container-fluid pt-3">
+        <div class="card shadow">
+          <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">Company Info</p>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6"></div>
+            </div>
+            <div
+              id="dataTable"
+              class="table-responsive table mt-2"
+              role="grid"
+              aria-describedby="dataTable_info"
+            >
+              <table id="dataTable" class="table my-0">
+                <thead>
+                  <tr>
+                    <th>Company Name</th>
+                    <th></th>
+                    <th>Status</th>
+                    <th>Country</th>
+                    <th>City</th>
+                    <th>Phone Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for company in companies %}
+                  <tr>
+                    <td class="ifEmpty">{{company.name}}</td>
+                    <td ><i class="statusBall fa-solid fa-circle"></i></td>
+                    <td class="status">{{company.buyingstatus}}</td>
+                    <td class="ifEmpty">{{company.country}}</td>
+                    <td class="ifEmpty">{{company.city}}</td>
 
-	<div class="card-group">
-		{% for item in items %}
-		<div class="card">
-		  <img style="width: 200px;">
-		  <div class="card-body">
-		    <h5 class="card-title">Fruit</h5>
-		    <p class="card-text">{{ item.name }}</p>
-		  </div>
-		</div>
-		{% endfor %}
-	</div>
+                    <td class="ifEmpty">{{company.phone}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Company name</th>
+					<th></th>
+                    <th>Status</th>
+                    <th>Country</th>
+                    <th>City</th>
+                    <th>Phone Number</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<br>
+  <br />
+</div>
+<script>
+  const statuses = document.querySelectorAll(".status");
+  const statusBalls = document.querySelectorAll(".statusBall");
+  const statusText = status.innerText;
+  const empty = document.querySelectorAll(".ifEmpty");
+  
+  for (let i = 0; i < statuses.length; i++) {
+    const statusText = statuses[i].innerText;
+    const statusBall = statusBalls[i];
+    if (statusText == "Aktiv kund") {
+      statusBall.classList.add("text-success");
+	  statuses[i].innerText = "Customer";
+    } else if (statusText == "Ej intressant") {
+      statusBall.classList.add("text-danger");
+	  statuses[i].innerText = "Not Interested";
+    } else {
+      statusBall.classList.add("text-warning");
+		statuses[i].innerText = "Prospect";
+	  
+    }
+  }
+  for (let i = 0; i < empty.length; i++) {
+	const emptyText = empty[i].innerText;
+	if (emptyText == "") {
+	  empty[i].innerText = "N/A";
+	}
+  }
+</script>
 {% endblock %}

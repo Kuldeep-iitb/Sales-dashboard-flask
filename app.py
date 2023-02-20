@@ -2,12 +2,9 @@ from flask import Flask, render_template
 import apikey as apikey
 import requests
 import json
-import datetime as datetime
+from datetime import datetime, timedelta, date, time
+
 from collections import Counter
-
-
-
-
 
 # Feel free to import additional libraries if you like
 
@@ -18,13 +15,13 @@ app = Flask(__name__, static_url_path='/static')
 
 #get current date minus one year
 def one_year():
-    today = datetime.date.today()
-    year = datetime.timedelta(days=365)
+    today = datetime.today()
+    year = timedelta(days=365)
     return today - year
 
 def one_month():
-    today = datetime.date.today()
-    month = datetime.timedelta(days=30)
+    today = datetime.today()
+    month = timedelta(days=30)
     return today - month
 
 print(one_year())
@@ -76,16 +73,15 @@ def dashboard():
     print(len(response_deals))
     print(one_year())
     
-    #count deals per month
-    
- 
-
-    #count average deal value and deals per month
+    months = [datetime.today().replace(day=1) - timedelta(days=31*i) for i in range(12)]
+    deals_month = Counter({m.strftime('%m'): 0 for m in months})
     deal_value = 0
-    deals_month = []
+    # deals_month = []
     for deal in response_deals:
         deal_value += deal.get("value")
-        deals_month.append(deal.get("closeddate")[5:7])
+        month = deal.get("closeddate").split("-")[1]
+        if month in deals_month:
+            deals_month[month] += 1
     deals_month = Counter(deals_month)
 
     #convert to json
@@ -101,14 +97,13 @@ def dashboard():
         deal_value = 0
         return render_template('dashboard.html', deal_value=deal_value, deals_month=deals_month)
 
-
 # Example page
 @app.route('/example')
 def example():
 
     # Example of API call to get deals
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
-    params = f"?_limit=50&dealstatus=agreement&min-closeddate={one_year()}"
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
+    params = "?_limit=50"
     url = base_url + params
     #count deals
 
@@ -118,24 +113,41 @@ def example():
     print(one_year())
     
     #count average deal value
-    deal_value = 0
-    for deal in response_deals:
-        deal_value += deal.get("value")
+    deal_value = response_deals
+    # for deal in response_deals:
+    #     deal_value += deal.get("value")
 
-    if len(response_deals) > 0:
-        deal_value = deal_value / len(response_deals)
-        return render_template('example.html', deals=response_deals, deal_value=deal_value)
-    else:
-        msg = 'No deals found'
-        return render_template('example.html', msg=msg)
+    # if len(response_deals) > 0:
+    #     deal_value = deal_value / len(response_deals)
+    #     return render_template('example.html', deals=response_deals, deal_value=deal_value)
+    # else:
+    #     msg = 'No deals found'
+    return render_template('example.html', deal_value=deal_value)
 
 
 # You can add more pages to your app, like this:
 @app.route('/myroute')
-def myroute():
-    mydata = [{'name': 'apple'}, {'name': 'mango'}, {'name': 'banana'}]
+def customers():
 
-    return render_template('mytemplate.html', items=mydata)
+    # Example of API call to get deals
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
+    params = "?_limit=50"
+    url = base_url + params
+    #count deals
+
+    response = get_api_data(headers, url)
+    #count deals
+    companies = []
+    for company in response:
+        name = company["name"]
+        buyingstatus = company["buyingstatus"]["text"]
+        country = company["country"]
+        city = company["visitingcity"]
+        phone = company["phone"]
+        companies.append({"name": name, "buyingstatus": buyingstatus, "country": country, "city": city, "phone": phone})
+    print(companies)
+
+    return render_template('mytemplate.html', companies=companies)
 
 
 # DEBUGGING

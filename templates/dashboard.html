@@ -1,0 +1,135 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="pt-3"> 
+	<div class="row">
+	  <div class="col-md-6 col-xl-3 mb-4">
+		  <div class="card shadow-sm border-start-primary py-2">
+			  <div class="card-body">
+				  <div class="row align-items-center no-gutters">
+					  <div class="col me-2">
+						  <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Avg value/deal (Past Year)</span></div>
+						  <div class="text-dark fw-bold h5 mb-0"><span>{{deal_value}}kr</span></div>
+					  </div>
+					  <div class="col-auto"><i class="fa-solid fa-calendar fa-2x text-gray-300"></i></div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+	  <div class="col-md-6 col-xl-3 mb-4">
+		  <div class="card shadow-sm border-start-success py-2">
+			  <div class="card-body">
+				  <div class="row align-items-center no-gutters">
+					  <div class="col me-2">
+						  <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Earnings (annual)</span></div>
+						  <div class="text-dark fw-bold h5 mb-0"><span>$</span></div>
+					  </div>
+					  <div class="col-auto"><i class="fa-solid fa-dollar-sign fa-2x text-gray-300"></i></div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+	  
+	  <div class="col-md-6 col-xl-3 mb-4">
+		  <div class="card shadow-sm border-start-warning py-2">
+			  <div class="card-body">
+				  <div class="row align-items-center no-gutters">
+					  <div class="col me-2">
+						  <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>Total Sales (annual)</span></div>
+						  <div class="text-dark fw-bold h5 mb-0"><span>kr</span></div>
+					  </div>
+					  <div class="col-auto"><i class="fa-solid fa-handshake fa-2x text-gray-300"></i></div>
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+	  <div class="col-md-6 col-xl-3 mb-4">
+		<div class="card shadow-sm border-start-info py-2">
+			<div class="card-body">
+				<div class="row align-items-center no-gutters">
+					<div class="col me-2">
+						<div class="text-uppercase text-info fw-bold text-xs mb-1"><span>Goal (month)</span></div>
+						<div class="row g-0 align-items-center">
+							<div class="col-auto">
+								<div class="text-dark fw-bold h5 mb-0 me-3"><span>50%</span></div>
+							</div>
+							<div class="col">
+								<div class="progress progress-sm">
+									<div class="progress-bar bg-info" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"><span class="visually-hidden">50%</span></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-auto"><i class="fa-solid fa-trophy fa-2x text-gray-300"></i></div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
+  
+	
+	</div>
+	<!-- <p>Total Sales: {{total_sales}}</p>
+	<p>Total Sales Value: {{total_sales_value}}</p> -->
+	<!-- <p>test: {{company_avgs}}</p> -->
+	<!-- <ul>
+	  {% for company_avg in company_avgs %}
+	  <li>{{ company_avg.name }} : ${{ company_avg.avg }} : {{company_avg.dealsPerYear}}</li>
+  
+	  {% endfor %}
+	  
+	</ul> -->
+	
+	<div class="row">
+	  <div class="col-lg-7 col-xl-8">
+		  <div class="card shadow-sm mb-4">
+			  <div class="card-header d-flex justify-content-between align-items-center">
+				  <h6 class="text-primary fw-bold m-0">Earnings Overview</h6>
+				  <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+					  <div class="dropdown-menu shadow-sm dropdown-menu-end animated--fade-in">
+						  <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#"> Action</a><a class="dropdown-item" href="#"> Another action</a>
+						  <div class="dropdown-divider"></div><a class="dropdown-item" href="#"> Something else here</a>
+					  </div>
+				  </div>
+			  </div>
+			  <div class="card-body">
+				<canvas id="dealsMonthChart" height="250" style=" width: 796px; height: 320px;" width="596"></canvas>
+				  
+			  </div>
+		  </div>
+	  </div>
+	  <div class="col-lg-5 col-xl-4">
+		  <div class="card shadow-sm mb-4">
+			  <div class="card-header d-flex justify-content-between align-items-center">
+				  <h6 class="text-primary fw-bold m-0">Revenue Sources</h6>
+				  <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+					  <div class="dropdown-menu shadow-sm dropdown-menu-end animated--fade-in">
+						  <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#"> Action</a><a class="dropdown-item" href="#"> Another action</a>
+						  <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Something else here</a>
+						  Hello
+					  </div>
+				  </div>
+			  </div>
+			  <div class="card-body">
+				<ol>
+				  <!-- {% for company_avg in company_avgs %}
+				  <li>{{ company_avg.name }} : ${{ company_avg.avg }} : </li>
+			  
+				  {% endfor %} -->
+				  
+				</ol>
+				  
+			  </div>
+		  </div>
+	  </div>
+  </div>
+  </div>
+  
+  
+  <br />
+
+  <script>
+	  let dealsMonthData = JSON.parse('{{ deals_month|tojson|safe }}');
+	  console.log(dealsMonthData);
+  </script>
+{% endblock %}

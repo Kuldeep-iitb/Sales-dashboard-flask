@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>{{deal_value}}</h1>
+	<h1>Data for Deals</h1>
+
+		{% for deal in deals %}
+		<p>{{ deal }}</p>
+		{% endfor %}
+
+	<br>
+{% endblock %}

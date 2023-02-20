@@ -127,7 +127,7 @@ def example():
 
 
 # You can add more pages to your app, like this:
-@app.route('/myroute')
+@app.route('/customers')
 def customers():
 
     # Example of API call to get deals

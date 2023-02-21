@@ -76,7 +76,6 @@ def dashboard():
     companies = get_api_data(headers, url)
 
     # Example of API call to get deals
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
     params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
     url = base_url + params
 

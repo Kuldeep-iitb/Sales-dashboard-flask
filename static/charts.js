@@ -2,9 +2,9 @@ let dealsMonthProcessed = Object.keys(dealsMonthData).map((e) => ({
   label: e,
   data: dealsMonthData[e],
 }));
+
 let datalabels = dealsMonthProcessed.map((e) => e.label);
 let data = dealsMonthProcessed.map((e) => e.data);
-console.log(dealsMonthProcessed);
 
 let ctx = document.getElementById("dealsMonthChart").getContext("2d");
 
@@ -17,23 +17,24 @@ let dealsMonthChart = new Chart(ctx, {
         label: "Deals per month",
         data: data.reverse(),
         backgroundColor: [
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
           "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
           "rgba(75, 192, 192, 0.2)",
           "rgba(153, 102, 255, 0.2)",
           "rgba(255, 159, 64, 0.2)",
         ],
         borderColor: [
+            "rgba(255, 206, 86, 1)",
+            "rgba(54, 162, 235, 1)",
           "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
           "rgba(75, 192, 192, 1)",
           "rgba(153, 102, 255, 1)",
           "rgba(255, 159, 64, 1)",
         ],
         borderWidth: 1,
       },
+      
     ],
   },
   options: {

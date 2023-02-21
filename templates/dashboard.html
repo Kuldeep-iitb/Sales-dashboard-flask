@@ -22,7 +22,7 @@
 				  <div class="row align-items-center no-gutters">
 					  <div class="col me-2">
 						  <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>Earnings (annual)</span></div>
-						  <div class="text-dark fw-bold h5 mb-0"><span>$</span></div>
+						  <div class="text-dark fw-bold h5 mb-0"><span>{{deal_value_year}}kr</span></div>
 					  </div>
 					  <div class="col-auto"><i class="fa-solid fa-dollar-sign fa-2x text-gray-300"></i></div>
 				  </div>
@@ -66,19 +66,6 @@
 		</div>
 	</div>
   </div>
-  
-	
-	
-	<!-- <p>Total Sales: {{total_sales}}</p>
-	<p>Total Sales Value: {{total_sales_value}}</p> -->
-	<!-- <p>test: {{company_avgs}}</p> -->
-	<!-- <ul>
-	  {% for company_avg in company_avgs %}
-	  <li>{{ company_avg.name }} : ${{ company_avg.avg }} : {{company_avg.dealsPerYear}}</li>
-  
-	  {% endfor %}
-	  
-	</ul> -->
 	
 	<div class="row">
 	  <div class="col-lg-7 col-xl-8">
@@ -96,40 +83,38 @@
 				<canvas id="dealsMonthChart" height="250" style=" width: 796px; height: 320px;" width="596"></canvas>
 				  
 			  </div>
+			  <div class="card-body">
+				<!-- <canvas id="companyTotalYearChart" height="250" style=" width: 796px; height: 320px;" width="596"></canvas> -->
+			  </div>
 		  </div>
 	  </div>
 	  <div class="col-lg-5 col-xl-4">
 		  <div class="card shadow-sm mb-4">
 			  <div class="card-header d-flex justify-content-between align-items-center">
 				  <h6 class="text-primary fw-bold m-0">Revenue Sources</h6>
-				  <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
-					  <div class="dropdown-menu shadow-sm dropdown-menu-end animated--fade-in">
-						  <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#"> Action</a><a class="dropdown-item" href="#"> Another action</a>
-						  <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Something else here</a>
-						  Hello
-					  </div>
-				  </div>
+				  
 			  </div>
 			  <div class="card-body">
-				<ol>
-				  <!-- {% for company_avg in company_avgs %}
-				  <li>{{ company_avg.name }} : ${{ company_avg.avg }} : </li>
-			  
-				  {% endfor %} -->
-				  
-				</ol>
+				
+				<canvas id="companyTotalYearChart" height="750" style=" width: 796px; height: 320px;" width="596"></canvas>
+				
 				  
 			  </div>
 		  </div>
 	  </div>
   </div>
+  
+  <script>
+	  const companyTotalData = JSON.parse('{{companyTotalYear|safe}}');
+	  const dealsMonthData = JSON.parse(['{{deals_month|safe}}']);
+	  console.log(companyTotalData);
+	  console.log(dealsMonthData);
+	  
+  </script>
 </div>
   
   
 
 
 
-  <script>
-	  let dealsMonthData = JSON.parse(['{{deals_month|safe}}']);
-  </script>
 {% endblock %}

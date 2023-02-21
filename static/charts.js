@@ -4,7 +4,7 @@ const data = [12, 19, 3, 5, 2, 3, 12, 19, 3, 5, 2, 3];
 const dealsMonthChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
         datasets: [{
             label: 'Deals',
             data: data,

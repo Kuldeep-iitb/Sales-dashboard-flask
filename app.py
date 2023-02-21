@@ -15,6 +15,7 @@ app = Flask(__name__, static_url_path='/static')
 
 #get current date minus one year
 def one_year():
+    #today should equal current date but not time
     today = datetime.today()
     year = timedelta(days=365)
     return today - year
@@ -64,7 +65,7 @@ def dashboard():
     
     # Example of API call to get deals
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
-    params = f"?_limit=50&dealstatus=agreement&min-closeddate={one_year()}"
+    params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
     url = base_url + params
     #count deals
 
@@ -75,6 +76,7 @@ def dashboard():
     
     months = [datetime.today().replace(day=1) - timedelta(days=31*i) for i in range(12)]
     deals_month = Counter({m.strftime('%m'): 0 for m in months})
+    print(deals_month)
     deal_value = 0
     deals_year = 0
     
@@ -91,7 +93,7 @@ def dashboard():
     deals_month = json.dumps(deals_month)
     deal_value = int(deal_value / len(response_deals))
     
-    print(deals_month)
+
 
 
 
@@ -103,36 +105,45 @@ def dashboard():
 def example():
 
     # Example of API call to get deals
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = "?_limit=50"
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
+    params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
     url = base_url + params
-    #count deals
+    
 
     response_deals = get_api_data(headers, url)
-    #count deals
-    print(len(response_deals))
-    print(one_year())
     
-    #count average deal value
-    deal_value = response_deals
-    # for deal in response_deals:
-    #     deal_value += deal.get("value")
+    print(len(response_deals))
 
-    # if len(response_deals) > 0:
-    #     deal_value = deal_value / len(response_deals)
-    #     return render_template('example.html', deals=response_deals, deal_value=deal_value)
-    # else:
-    #     msg = 'No deals found'
-    return render_template('example.html', deal_value=deal_value)
+ 
+    months = [datetime.today().replace(day=1) - timedelta(days=30*i) for i in range(12)]
+    deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months})
+    
+    for deal in response_deals:
+        date = deal.get("closeddate").split("-")
+        date = date[0] + "-" + date[1]
+        print(date)
+        if date in deals_month:
+            deals_month[date] += 1
+        
+    print(deals_month)
+    print(months)
+
+    
+    deals_month = json.dumps(deals_month)
+    deal_value = response_deals
+    
+
+    return render_template('example.html', deal_value=deal_value, deals_month=deals_month)
 
 
 # You can add more pages to your app, like this:
 @app.route('/customers')
+#note to future self; take a look at Pagination (Target?), status is not correct
 def customers():
-
+    
     # Example of API call to get deals
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = "?_limit=50"
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limetype/company/"
+    params = "?_limit=5"
     url = base_url + params
     #count deals
 

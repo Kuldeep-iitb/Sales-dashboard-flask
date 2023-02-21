@@ -74,9 +74,9 @@ def dashboard():
     print(len(response_deals))
     print(one_year())
     
-    months = [datetime.today().replace(day=1) - timedelta(days=31*i) for i in range(12)]
-    deals_month = Counter({m.strftime('%m'): 0 for m in months})
-    print(deals_month)
+    months = [datetime.today().replace(day=1) - timedelta(days=30*i) for i in range(12)]
+    deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months})
+   
     deal_value = 0
     deals_year = 0
     
@@ -84,13 +84,17 @@ def dashboard():
     for deal in response_deals:
         deals_year += 1
         deal_value += deal.get("value")
-        month = deal.get("closeddate").split("-")[1]
-        if month in deals_month:
-            deals_month[month] += 1
+        date = deal.get("closeddate").split("-")
+        date = date[0] + "-" + date[1]
+        if date in deals_month:
+            deals_month[date] += 1
     deals_month = Counter(deals_month)
+
+   
 
     #convert to json
     deals_month = json.dumps(deals_month)
+    print(deals_month)
     deal_value = int(deal_value / len(response_deals))
     
 

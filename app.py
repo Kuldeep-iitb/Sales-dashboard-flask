@@ -3,6 +3,9 @@ import apikey as apikey
 import requests
 import json
 from datetime import datetime, timedelta, date, time
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 from collections import Counter
 
@@ -74,7 +77,7 @@ def dashboard():
     print(len(response_deals))
     print(one_year())
     
-    months = [datetime.today().replace(day=1) - timedelta(days=30*i) for i in range(12)]
+    months = [datetime.today() - timedelta(days=30*i) for i in range(13)]
     deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months})
    
     deal_value = 0
@@ -108,46 +111,53 @@ def dashboard():
 @app.route('/example')
 def example():
 
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
+    params = "?_limit=50"
+    url = base_url + params
     # Example of API call to get deals
+    companies = get_api_data(headers, url)
+    
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
     params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
     url = base_url + params
-    
 
-    response_deals = get_api_data(headers, url)
+    deals = get_api_data(headers, url)
     
-    print(len(response_deals))
+    company_totals = {}
+    companies_with_deals = []
 
- 
-    months = [datetime.today().replace(day=1) - timedelta(days=30*i) for i in range(12)]
-    deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months})
+# Loop through the deals and calculate the total value for each company
+    for deal in deals:
+        deal_id = deal['company'] 
+        value = deal['value']
+        if deal_id in company_totals:
+            company_totals[deal_id] += value
+        else:
+            company_totals[deal_id] = value
     
-    for deal in response_deals:
-        date = deal.get("closeddate").split("-")
-        date = date[0] + "-" + date[1]
-        print(date)
-        if date in deals_month:
-            deals_month[date] += 1
-        
-    print(deals_month)
-    print(months)
+# if company_id == deal_id: company_totals[company_id] += value
+    for company in companies:
+        company_id = company['_id']
+        if company_id in company_totals:
+            company['total_value'] = company_totals[company_id]
+            companies_with_deals.append({'name': company.get('name'), 'total': company.get('total_value')})
+    companies_with_deals = json.dumps(companies_with_deals)
+        # else:
+        #     company['total_value'] = 0
+    print(companies_with_deals)
 
-    
-    deals_month = json.dumps(deals_month)
-    deal_value = response_deals
-    
 
-    return render_template('example.html', deal_value=deal_value, deals_month=deals_month)
+    return render_template('example.html', companies=companies_with_deals)
 
 
 # You can add more pages to your app, like this:
 @app.route('/customers')
 #note to future self; take a look at Pagination (Target?), status is not correct
 def customers():
-    
+
     # Example of API call to get deals
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limetype/company/"
-    params = "?_limit=5"
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
+    params = "?_limit=50"
     url = base_url + params
     #count deals
 

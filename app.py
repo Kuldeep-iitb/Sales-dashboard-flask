@@ -76,6 +76,7 @@ def dashboard():
     companies = get_api_data(headers, url)
 
     # Example of API call to get deals
+    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
     params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
     url = base_url + params
 
@@ -109,6 +110,7 @@ def dashboard():
     deals_month = json.dumps(deals_month)
     deal_value_year = int(deal_value)
     deal_value = int(deal_value / len(deals))
+    customers_year = len(company_totals)
 
     # for company in companies:
     #     company_id = company['_id']
@@ -116,9 +118,7 @@ def dashboard():
     #         company['total_value'] = company_totals[company_id]
     #         companies_with_deals.append({'name': company.get(
     #             'name'), 'total': company.get('total_value')})
-    
 
-    
     for company in companies:
         company_id = company['_id']
         if company_id in company_totals:
@@ -127,12 +127,8 @@ def dashboard():
             companies_with_deals[name] = total_value
 
     companies_with_deals = json.dumps(companies_with_deals)
-    
-    
-    
-    
 
-    return render_template('dashboard.html', deal_value=deal_value, deal_value_year=deal_value_year, deals_month=deals_month, deals_year=deals_year, companyTotalYear=companies_with_deals)
+    return render_template('dashboard.html', deal_value=deal_value, deal_value_year=deal_value_year, deals_month=deals_month, deals_year=deals_year, customers_year=customers_year, companyTotalYear=companies_with_deals)
 
 
 # Example page
@@ -190,16 +186,19 @@ def customers():
     # count deals
 
     response = get_api_data(headers, url)
-    # count deals
-    companies = []
-    for company in response:
-        name = company["name"]
-        buyingstatus = company["buyingstatus"]["text"]
-        country = company["country"]
-        city = company["visitingcity"]
-        phone = company["phone"]
-        companies.append({"name": name, "buyingstatus": buyingstatus,
-                         "country": country, "city": city, "phone": phone})
+    
+    # companies = []
+    # for company in response:
+    #     name = company["name"]
+    #     buyingstatus = company["buyingstatus"]["text"]
+    #     country = company["country"]
+    #     city = company["visitingcity"]
+    #     phone = company["phone"]
+    #     companies.append({"name": name, "buyingstatus": buyingstatus,
+    #                      "country": country, "city": city, "phone": phone})
+
+    companies = [{"name": company["name"], "buyingstatus": company["buyingstatus"]["text"],
+                  "country": company["country"], "city": company["visitingcity"], "phone": company["phone"]} for company in response]
     print(companies)
 
     return render_template('customers.html', companies=companies)

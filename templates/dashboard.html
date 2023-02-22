@@ -113,15 +113,6 @@
 		console.log(companyTotalData);
 		console.log(dealsMonthData);
 
-		roundNum = document.querySelectorAll('.round-num');
-
-		roundNum.forEach((num) => {
-			if (num.innerText.length > 6) {
-				num.innerText = (num.innerText / 1000000).toFixed(1) + 'Mkr';
-			} else if (num.innerText.length > 3) {
-				num.innerText = (num.innerText / 1000).toFixed(1) + 'kkr';
-			}
-		});
 	</script>
 </div>
 

@@ -25,7 +25,7 @@
                     <th></th>
                     <th>Status</th>
                     <th>Country</th>
-                    <th>City</th>
+                    <th>Revenue (Annual)</th>
                     <th>Phone Number</th>
                   </tr>
                 </thead>
@@ -34,9 +34,9 @@
                   <tr>
                     <td class="ifEmpty">{{company.name}}</td>
                     <td ><i class="statusBall fa-solid fa-circle"></i></td>
-                    <td class="status">{{company.buyingstatus}}</td>
+                    <td class="status">{{company.status}}</td>
                     <td class="ifEmpty">{{company.country}}</td>
-                    <td class="ifEmpty">{{company.city}}</td>
+                    <td class="ifEmptyNum round-num">{{company.value}}</td>
 
                     <td class="ifEmpty">{{company.phone}}</td>
                   </tr>
@@ -48,7 +48,7 @@
 					<th></th>
                     <th>Status</th>
                     <th>Country</th>
-                    <th>City</th>
+                    <th>Revenue (Annual)</th>
                     <th>Phone Number</th>
                   </tr>
                 </tfoot>
@@ -62,32 +62,5 @@
 
   <br />
 </div>
-<script>
-  const statuses = document.querySelectorAll(".status");
-  const statusBalls = document.querySelectorAll(".statusBall");
-  const statusText = status.innerText;
-  const empty = document.querySelectorAll(".ifEmpty");
-  
-  for (let i = 0; i < statuses.length; i++) {
-    const statusText = statuses[i].innerText;
-    const statusBall = statusBalls[i];
-    if (statusText == "Aktiv kund") {
-      statusBall.classList.add("text-success");
-	  statuses[i].innerText = "Customer";
-    } else if (statusText == "Ej intressant") {
-      statusBall.classList.add("text-danger");
-	  statuses[i].innerText = "Not Interested";
-    } else {
-      statusBall.classList.add("text-warning");
-		statuses[i].innerText = "Prospect";
-	  
-    }
-  }
-  for (let i = 0; i < empty.length; i++) {
-	const emptyText = empty[i].innerText;
-	if (emptyText == "") {
-	  empty[i].innerText = "N/A";
-	}
-  }
-</script>
+
 {% endblock %}

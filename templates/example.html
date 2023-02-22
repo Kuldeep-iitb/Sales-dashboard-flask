@@ -4,17 +4,13 @@
 <h1></h1>
 	<h1>Data for Deals</h1>
 
-	<table>
-		<thead>
-		  <tr>
-			<th>Company Name</th>
-			<th>Total Value of Deals</th>
-		  </tr>
-		</thead>
-		<tbody>
-		  
-		</tbody>
-	  </table>
+	{% for company in companies %}
+		<h2>{{company.name}}</h2>
+		<h3>{{company.buyingstatus}}</h3>
+		<h3>{{company.country}}</h3>
+		<h3>{{company.value}}</h3>
+		<h3>{{company.phone}}</h3>
+	{% endfor %}
 
 	<br>
 {% endblock %}

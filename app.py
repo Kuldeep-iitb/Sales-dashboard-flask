@@ -130,22 +130,6 @@ def dashboard():
     return render_template('dashboard.html', deal_value=deal_value, deal_value_year=deal_value_year, deals_month=deals_month, deals_year=deals_year, customers_year=customers_year, companyTotalYear=companies_with_deals)
 
 
-
-@app.route('/example')
-def example():
-    offset = request.args.get('offset', default=0, type=int)
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = f"?_limit=5&_offset={offset}"
-    url = base_url + params
-    companies = get_api_data_next(headers, url)
-    
-
-    next_offset = offset + 5 if len(companies) == 5 else None
-    prev_offset = offset - 5 if offset > 0 else None
-
-    return render_template('example.html', companies=companies, next_offset=next_offset, prev_offset=prev_offset)
-
-
 @app.route('/customers')
 def customers():
     offset = request.args.get('offset', default=0, type=int)

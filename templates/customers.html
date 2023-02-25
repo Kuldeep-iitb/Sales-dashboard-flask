@@ -33,7 +33,7 @@
                   {% for company in companies %}
                   <tr>
                     <td class="ifEmpty">{{company.name}}</td>
-                    <td ><i class="statusBall fa-solid fa-circle"></i></td>
+                    <td><i class="statusBall fa-solid fa-circle"></i></td>
                     <td class="status">{{company.status}}</td>
                     <td class="ifEmpty">{{company.country}}</td>
                     <td class="ifEmptyNum round-num">{{company.value}}</td>
@@ -45,7 +45,7 @@
                 <tfoot>
                   <tr>
                     <th>Company name</th>
-					<th></th>
+                    <th></th>
                     <th>Status</th>
                     <th>Country</th>
                     <th>Revenue (Annual)</th>
@@ -53,6 +53,18 @@
                   </tr>
                 </tfoot>
               </table>
+              <ul class="pagination justify-content-center">
+                {% if prev_offset is not none %}
+                <li class="page-item p-1"><a class="page-link" aria-label="Previous" href="{{ url_for('customers', offset=prev_offset) }}"><span aria-hidden="true">«</span></a></li>
+                {% endif %}
+                
+                {% if next_offset is not none %}
+                <li class="page-item p-1"><a class="page-link" aria-label="Next" href="{{ url_for('customers', offset=next_offset) }} "><span aria-hidden="true">»</span></a></li>
+                {% endif %}
+                <!-- <li class="page-item disabled"><a class="page-link" aria-label="Previous" href="#"><span aria-hidden="true">«</span></a></li>
+                
+                <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span aria-hidden="true">»</span></a></li> -->
+            </ul>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 from collections import Counter
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, request
 import apikey as apikey
 import requests
 import json
@@ -8,29 +8,19 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-
-# Feel free to import additional libraries if you like
-
 app = Flask(__name__, static_url_path='/static')
-
-# Paste the API-key you have received as the value for "x-api-key"
-
 
 # get current date minus one year
 def one_year():
-    # today should equal current date but not time
     today = datetime.today()
     year = timedelta(days=365)
     return today - year
-
 
 def one_month():
     today = datetime.today()
     month = timedelta(days=30)
     return today - month
 
-
-print(one_year())
 headers = {
     "Content-Type": "application/json",
     "Accept": "application/hal+json",
@@ -40,13 +30,13 @@ headers = {
 
 # Example of function for REST API call to get data from Lime
 def get_api_data(headers, url):
-    # First call to get first data page from the API
+    
     response = requests.get(url=url,
                             headers=headers,
                             data=None,
                             verify=False)
 
-    # Convert response string into json data and get embedded limeobjects
+
     json_data = json.loads(response.text)
     limeobjects = json_data.get("_embedded").get("limeobjects")
 
@@ -65,33 +55,44 @@ def get_api_data(headers, url):
 
     return limeobjects
 # Index page
+def get_api_data_next(headers, url):
+    # First call to get first data page from the API
+    response = requests.get(url=url,
+                            headers=headers,
+                            data=None,
+                            verify=False)
+
+    # Convert response string into json data and get embedded limeobjects
+    json_data = json.loads(response.text)
+    limeobjects = json_data.get("_embedded").get("limeobjects")
+    # Check for more data pages and get thoose too
+    nextpage = json_data.get("_links").get("next")
+    for item in limeobjects:
+        item['next'] = nextpage
+
+
+    return limeobjects
 
 
 @app.route('/')
 def dashboard():
-    base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = "?_limit=50"
-    url = base_url + params
-    # Example of API call to get deals
-    companies = get_api_data(headers, url)
 
-    # Example of API call to get deals
-
-    ## KOLLA EMDED COMPANY
-    ## KOLLA EMDED COMPANY
-    ## KOLLA EMDED COMPANY
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
-    params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}"
+    params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}&_embed=company"
     url = base_url + params
 
     deals = get_api_data(headers, url)
-
+    
+    companies = [deal.get("_embedded").get("relation_company") for deal in deals]
+    print(companies[0])
+    
+  
+    
     company_totals = {}
     companies_with_deals = {}
 
     months = [datetime.today() - timedelta(days=30*i) for i in range(13)]
     deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months})
-
     deal_value = 0
     deals_year = 0
 
@@ -116,12 +117,6 @@ def dashboard():
     deal_value = int(deal_value / len(deals))
     customers_year = len(company_totals)
 
-    # for company in companies:
-    #     company_id = company['_id']
-    #     if company_id in company_totals:
-    #         company['total_value'] = company_totals[company_id]
-    #         companies_with_deals.append({'name': company.get(
-    #             'name'), 'total': company.get('total_value')})
 
     for company in companies:
         company_id = company['_id']
@@ -135,40 +130,41 @@ def dashboard():
     return render_template('dashboard.html', deal_value=deal_value, deal_value_year=deal_value_year, deals_month=deals_month, deals_year=deals_year, customers_year=customers_year, companyTotalYear=companies_with_deals)
 
 
-# Example page
+
 @app.route('/example')
 def example():
-
+    offset = request.args.get('offset', default=0, type=int)
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = "?_limit=50"
+    params = f"?_limit=5&_offset={offset}"
     url = base_url + params
-    # Example of API call to get deals
-    companies = get_api_data(headers, url)
-
-   
-    # else:
-    #     company['total_value'] = 0
-
+    companies = get_api_data_next(headers, url)
     
-    return render_template('example.html', companies=companies)
+
+    next_offset = offset + 5 if len(companies) == 5 else None
+    prev_offset = offset - 5 if offset > 0 else None
+
+    return render_template('example.html', companies=companies, next_offset=next_offset, prev_offset=prev_offset)
 
 
-# You can add more pages to your app, like this:
 @app.route('/customers')
-# note to future self; take a look at Pagination (Target?), status is not correct
 def customers():
-
+    offset = request.args.get('offset', default=0, type=int)
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
-    params = "?_limit=50"
+    params = f"?_limit=35&_sort=-_timestamp&_offset={offset}"
     url = base_url + params
-    company_res = get_api_data(headers, url)
-
+    company_res = get_api_data_next(headers, url)
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
-    params = "?_limit=50&_sort=-closeddate&dealstatus=agreement"
+    params = f"?_limit=35&_sort=-closeddate&dealstatus=agreement&_offset={offset}"
     url = base_url + params
 
+    deals_res = get_api_data_next(headers, url)
+    print(len(company_res))
+   
+    next_offset = offset + 35 if len(company_res) == 35 else None
+    prev_offset = offset - 35 if offset > 0 else None
+    if len(company_res) == 35: print('we have 30')
+    print(next_offset)
     
-    deals_res = get_api_data(headers, url)
     #get 'company' from deals_res and compare to 'company_id' in company_res where closeddate is within the last year
     deals_filtered = [{"company": deal["company"],"value": deal["value"] , "closeddate": deal["closeddate"] } for deal in deals_res]
     deals_last_year = [deal for deal in deals_filtered if deal["closeddate"] > one_year().strftime("%Y-%m-%d")]
@@ -180,7 +176,6 @@ def customers():
     inactive = []
     #sort customers by value
     
-
     #check if company_id is in deals_last_year
     for company in companies_filtered:
         if company["company_id"] in [deal["company"] for deal in deals_last_year]:
@@ -201,17 +196,10 @@ def customers():
     customers.sort(key=lambda x: x["value"], reverse=True)
     
     companies = customers + prospects + inactive   
+  
 
-    return render_template('customers.html', companies=companies)
+    return render_template('customers.html', companies=companies, next_offset=next_offset, prev_offset=prev_offset)
 
-
-# DEBUGGING
-"""
-If you want to debug your app, one of the ways you can do that is to use:
-import pdb; pdb.set_trace()
-Add that line of code anywhere, and it will act as a breakpoint and halt
-your application
-"""
 
 if __name__ == '__main__':
     app.secret_key = 'somethingsecret'

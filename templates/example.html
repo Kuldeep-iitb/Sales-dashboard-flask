@@ -1,16 +1,23 @@
-{% extends 'layout.html' %}
-
-{% block body %}
+{% extends 'layout.html' %} {% block body %}
 <h1></h1>
-	<h1>Data for Deals</h1>
+<h1>Data for Deals</h1>
 
-	{% for company in companies %}
-		<h2>{{company.name}}</h2>
-		<h3>{{company.buyingstatus}}</h3>
-		<h3>{{company.country}}</h3>
-		<h3>{{company.value}}</h3>
-		<h3>{{company.phone}}</h3>
-	{% endfor %}
 
-	<br>
+
+
+
+
+{% for company in companies %}
+<p>{{company}}</p>
+{% endfor %}
+
+{% if prev_offset is not none %}
+<a href="{{ url_for('example', offset=prev_offset) }}">Prev</a>
+{% endif %}
+
+{% if next_offset is not none %}
+<a href="{{ url_for('example', offset=next_offset) }}">Next</a>
+{% endif %}
+
+<br />
 {% endblock %}

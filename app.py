@@ -1,12 +1,9 @@
-from collections import Counter
 from flask import Flask, render_template, url_for, request
 import apikey as apikey
 import requests
 import json
 from datetime import datetime, timedelta
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__, static_url_path='/static')
 
@@ -69,7 +66,7 @@ def one_year():
 
 @app.route('/')
 def dashboard():
-
+    # Get deals with dealstatus agreement from API last year and embed company data
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"
     params = f"?_limit=50&_sort=-closeddate&dealstatus=agreement&min-closeddate={one_year()}&_embed=company"
     url = base_url + params
@@ -86,8 +83,9 @@ def dashboard():
 
     #returns array of ex. (2023, 2, 27, 9, 20, 10, 461091)
     months = [datetime.today() - timedelta(days=30*i) for i in range(13)] 
-    #converts months to strings and assign value 0 ex. "2023-02': 0"
-    deals_month = Counter({m.strftime('%Y-%m'): 0 for m in months}) 
+    #converts months to YYYY-MM and assign value 0 ex. "2023-02': 0"
+    deals_month = {m.strftime('%Y-%m'): 0 for m in months}
+    
     
 
     
@@ -110,24 +108,22 @@ def dashboard():
         else:
             company_totals[deal_id] = value
     
-    
+
     deals_month = json.dumps(deals_month)
     deal_value_year = int(deal_value)
     deal_value = int(deal_value / len(deals))
     customers_year = len(company_totals)
 
-    # update the companies_with_deals dictionary with the total value of deals for each company
-    for company in companies:
-        company_id = company['_id']
-        if company_id in company_totals:
-            name = company.get('name')
-            total_value = company_totals[company_id]
-            companies_with_deals[name] = total_value
+    # update companies_with_deals with the total value of deals for each company
+    # for company in companies:
+    #     company_id = company['_id']
+    #     if company_id in company_totals:
+    #         name = company.get('name')
+    #         total_value = company_totals[company_id]
+    #         companies_with_deals[name] = total_value
 
     companies_with_deals = json.dumps(companies_with_deals)
-    print(companies_with_deals)
-    print(company_totals)
-
+    
     return render_template('dashboard.html', deal_value=deal_value, deal_value_year=deal_value_year, deals_month=deals_month, deals_year=deals_year, customers_year=customers_year, companyTotalYear=companies_with_deals)
 
 
@@ -138,7 +134,7 @@ def customers():
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/company/"
     params = f"?_limit={limit}&_sort=-_timestamp&_offset={offset}"
     url = base_url + params
-
+    
     company_res = get_api_data_next(headers, url)
 
     base_url = "https://api-test.lime-crm.com/api-test/api/v1/limeobject/deal/"

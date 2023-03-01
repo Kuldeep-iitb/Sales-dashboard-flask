@@ -38,7 +38,7 @@ roundNum.forEach((num) => {
 });
 
 emptyNum.forEach((num) => {
-    if (num.innerText == "") {
-        num.innerText = "0kr";
-    }
-    });
+  if (num.innerText == "") {
+    num.innerText = "0kr";
+  }
+});

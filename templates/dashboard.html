@@ -8,7 +8,8 @@
 				<div class="card-body">
 					<div class="row align-items-center no-gutters">
 						<div class="col me-2">
-							<div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Earnings (annual)</span>
+							<div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Earnings
+									(annual)</span>
 							</div>
 							<div class="text-dark fw-bold h5 mb-0"><span class="round-num">{{deal_value_year}}</span>
 							</div>
@@ -27,12 +28,12 @@
 									(annual)</span></div>
 							<div class="text-dark fw-bold h5 mb-0"><span class="round-num">{{deal_value}}</span></div>
 						</div>
-						<div class="col-auto"><i class="fa-solid fa-chart-simple fa-2x text-secondary" ></i></div>
+						<div class="col-auto"><i class="fa-solid fa-chart-simple fa-2x text-secondary"></i></div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 
 		<div class="col-md-6 col-xl-3 mb-4">
 			<div class="card shadow-sm border-start-warning py-2">
@@ -91,18 +92,15 @@
 			</div>
 		</div> -->
 	</div>
-	</div>
-	
+</div>
 
 
 
-	<script>
-		const companyTotalData = JSON.parse('{{companyTotalYear|safe}}');
-		const dealsMonthData = JSON.parse(['{{deals_month|safe}}']);
-		console.log(companyTotalData);
-		console.log(dealsMonthData);
 
-	</script>
+<script>
+	const companyTotalData = JSON.parse('{{companyTotalYear|safe}}');
+	const dealsMonthData = JSON.parse(['{{deals_month|safe}}']);
+</script>
 </div>
 
 
